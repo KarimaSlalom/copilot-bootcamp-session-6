@@ -87,10 +87,9 @@ describe('TodoCard Component', () => {
 
   it('should apply completed class when todo is completed', () => {
     const completedTodo = { ...mockTodo, completed: 1 };
-    const { container } = render(<TodoCard todo={completedTodo} {...mockHandlers} isLoading={false} />);
+    render(<TodoCard todo={completedTodo} {...mockHandlers} isLoading={false} />);
     
-    const card = container.querySelector('.todo-card');
-    expect(card).toHaveClass('completed');
+    expect(screen.getByTestId('todo-card')).toHaveClass('completed');
   });
 
   it('should not render due date when dueDate is null', () => {
@@ -98,5 +97,170 @@ describe('TodoCard Component', () => {
     render(<TodoCard todo={todoNoDate} {...mockHandlers} isLoading={false} />);
     
     expect(screen.queryByText(/Due:/)).not.toBeInTheDocument();
+  });
+});
+
+// ─── T004: US1 – Visual Overdue Indicator ────────────────────────────────────
+describe('TodoCard — Overdue Indicator (US1)', () => {
+  const overdueTodo = {
+    id: 2,
+    title: 'Overdue Task',
+    dueDate: '2020-01-01',
+    completed: 0,
+    createdAt: '2019-12-01T00:00:00Z',
+  };
+
+  const futureTodo = {
+    id: 3,
+    title: 'Future Task',
+    dueDate: '2099-01-01',
+    completed: 0,
+    createdAt: '2026-01-01T00:00:00Z',
+  };
+
+  const noDateTodo = {
+    id: 4,
+    title: 'No Date Task',
+    dueDate: null,
+    completed: 0,
+    createdAt: '2026-01-01T00:00:00Z',
+  };
+
+  const invalidDateTodo = {
+    id: 5,
+    title: 'Invalid Date Task',
+    dueDate: 'not-a-date',
+    completed: 0,
+    createdAt: '2026-01-01T00:00:00Z',
+  };
+
+  const mockHandlers = {
+    onToggle: jest.fn(),
+    onEdit: jest.fn(),
+    onDelete: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('shows "Overdue" label when todo is incomplete with a past due date', () => {
+    render(<TodoCard todo={overdueTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByText('Overdue')).toBeInTheDocument();
+  });
+
+  it('applies todo-card--overdue class when todo is incomplete with a past due date', () => {
+    render(<TodoCard todo={overdueTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).toHaveClass('todo-card--overdue');
+  });
+
+  it('does not show "Overdue" label when todo has a future due date', () => {
+    render(<TodoCard todo={futureTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.queryByText('Overdue')).not.toBeInTheDocument();
+  });
+
+  it('does not apply todo-card--overdue class when todo has a future due date', () => {
+    render(<TodoCard todo={futureTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).not.toHaveClass('todo-card--overdue');
+  });
+
+  it('does not show "Overdue" label when todo has no due date', () => {
+    render(<TodoCard todo={noDateTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.queryByText('Overdue')).not.toBeInTheDocument();
+  });
+
+  it('does not apply todo-card--overdue class when todo has no due date', () => {
+    render(<TodoCard todo={noDateTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).not.toHaveClass('todo-card--overdue');
+  });
+
+  it('does not show "Overdue" label when dueDate is today', () => {
+    const todayString = new Date().toISOString().slice(0, 10);
+    const todayTodo = { ...overdueTodo, dueDate: todayString };
+    render(<TodoCard todo={todayTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.queryByText('Overdue')).not.toBeInTheDocument();
+  });
+
+  it('does not show "Overdue" label when dueDate is invalid', () => {
+    render(<TodoCard todo={invalidDateTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.queryByText('Overdue')).not.toBeInTheDocument();
+  });
+
+  it('does not apply todo-card--overdue class when dueDate is invalid', () => {
+    render(<TodoCard todo={invalidDateTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).not.toHaveClass('todo-card--overdue');
+  });
+});
+
+// ─── T007: US2 – Overdue Indicator Clears on Completion ──────────────────────
+describe('TodoCard — Overdue Clears on Completion (US2)', () => {
+  const pastDueTodo = {
+    id: 10,
+    title: 'Past Due Task',
+    dueDate: '2020-01-01',
+    completed: 0,
+    createdAt: '2019-12-01T00:00:00Z',
+  };
+
+  const mockHandlers = {
+    onToggle: jest.fn(),
+    onEdit: jest.fn(),
+    onDelete: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('does not show "Overdue" label when todo is completed (boolean true)', () => {
+    const completedTodo = { ...pastDueTodo, completed: true };
+    render(<TodoCard todo={completedTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.queryByText('Overdue')).not.toBeInTheDocument();
+  });
+
+  it('does not apply todo-card--overdue class when todo is completed (integer 1)', () => {
+    const completedTodo = { ...pastDueTodo, completed: 1 };
+    render(<TodoCard todo={completedTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).not.toHaveClass('todo-card--overdue');
+  });
+
+  it('shows "Overdue" label when a previously-completed todo is re-opened', () => {
+    const incompleteTodo = { ...pastDueTodo, completed: 0 };
+    render(<TodoCard todo={incompleteTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByText('Overdue')).toBeInTheDocument();
+  });
+});
+
+// ─── T008: US3 – Overdue Indicator Respects Themes ───────────────────────────
+describe('TodoCard — Overdue Indicator Respects Themes (US3)', () => {
+  const overdueTodo = {
+    id: 20,
+    title: 'Themed Overdue Task',
+    dueDate: '2020-01-01',
+    completed: 0,
+    createdAt: '2019-12-01T00:00:00Z',
+  };
+
+  const mockHandlers = {
+    onToggle: jest.fn(),
+    onEdit: jest.fn(),
+    onDelete: jest.fn(),
+  };
+
+  afterEach(() => {
+    document.documentElement.removeAttribute('data-theme');
+    jest.clearAllMocks();
+  });
+
+  it('applies todo-card--overdue class in dark mode (class-based theme; CSS variable resolves correctly)', () => {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    render(<TodoCard todo={overdueTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).toHaveClass('todo-card--overdue');
+  });
+
+  it('applies todo-card--overdue class in light mode (default theme)', () => {
+    document.documentElement.removeAttribute('data-theme');
+    render(<TodoCard todo={overdueTodo} {...mockHandlers} isLoading={false} />);
+    expect(screen.getByTestId('todo-card')).toHaveClass('todo-card--overdue');
   });
 });

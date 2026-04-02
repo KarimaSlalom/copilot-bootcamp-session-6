@@ -23,7 +23,7 @@ description: "Task list for 001-overdue-todo-visual"
 
 **Purpose**: Create the `utils/` directory structure needed to house the new overdue utility.
 
-- [ ] T001 Create `packages/frontend/src/utils/` directory and `packages/frontend/src/utils/__tests__/` subdirectory
+- [X] T001 Create `packages/frontend/src/utils/` directory and `packages/frontend/src/utils/__tests__/` subdirectory
 
 ---
 
@@ -33,8 +33,8 @@ description: "Task list for 001-overdue-todo-visual"
 
 **⚠️ CRITICAL**: `TodoCard.js` changes in Phase 3 import this utility. Complete T002 and T003 first.
 
-- [ ] T002 Write unit tests for `isOverdue` in `packages/frontend/src/utils/__tests__/overdueUtils.test.js` — cover all 8 contract rows: `(null, false)→false`, `('invalid', false)→false`, `('2099-01-01', false)→false`, `(todayString, false)→false`, `('2020-01-01', false)→true`, `('2020-01-01', true)→false`, `('2020-01-01', 1)→false`, `('2020-01-01', 0)→true`
-- [ ] T003 Implement `isOverdue(dueDate, completed)` in `packages/frontend/src/utils/overdueUtils.js` using local-midnight boundary comparison and `isNaN` guard per research.md decision 1
+- [X] T002 Write unit tests for `isOverdue` in `packages/frontend/src/utils/__tests__/overdueUtils.test.js` — cover all 8 contract rows: `(null, false)→false`, `('invalid', false)→false`, `('2099-01-01', false)→false`, `(todayString, false)→false`, `('2020-01-01', false)→true`, `('2020-01-01', true)→false`, `('2020-01-01', 1)→false`, `('2020-01-01', 0)→true`
+- [X] T003 Implement `isOverdue(dueDate, completed)` in `packages/frontend/src/utils/overdueUtils.js` using local-midnight boundary comparison and `isNaN` guard per research.md decision 1
 
 **Checkpoint**: Run `npm test --workspace=packages/frontend` — all T002 tests MUST pass; no other tests should be affected
 
@@ -48,12 +48,12 @@ description: "Task list for 001-overdue-todo-visual"
 
 ### Tests for User Story 1 (write first — must FAIL before T006)
 
-- [ ] T004 [P] [US1] Add overdue rendering test cases to `packages/frontend/src/components/__tests__/TodoCard.test.js` — assert: (a) `getByText('Overdue')` present and `.todo-card--overdue` class on container when `completed=0` + past `dueDate`; (b) `queryByText('Overdue')` is null and no `.todo-card--overdue` class for `completed=0` + future `dueDate`; (c) same null assertions for `completed=0` + no `dueDate`; (d) same null assertions for `completed=0` + today's date; (e) same null assertions for `completed=0` + invalid `dueDate`
+- [X] T004 [P] [US1] Add overdue rendering test cases to `packages/frontend/src/components/__tests__/TodoCard.test.js` — assert: (a) `getByText('Overdue')` present and `.todo-card--overdue` class on container when `completed=0` + past `dueDate`; (b) `queryByText('Overdue')` is null and no `.todo-card--overdue` class for `completed=0` + future `dueDate`; (c) same null assertions for `completed=0` + no `dueDate`; (d) same null assertions for `completed=0` + today's date; (e) same null assertions for `completed=0` + invalid `dueDate`
 
 ### Implementation for User Story 1
 
-- [ ] T005 [P] [US1] Add `.todo-card--overdue` and `.todo-overdue-label` CSS rules to `packages/frontend/src/styles/theme.css` using `var(--danger-color)`, `border-left: 3px solid`, `font-size: 12px`, `font-weight: 400`, `margin-left: 6px` — no hardcoded hex values
-- [ ] T006 [US1] Update `packages/frontend/src/components/TodoCard.js`: import `{ isOverdue }` from `../utils/overdueUtils`, compute `const overdue = isOverdue(todo.dueDate, todo.completed)` in the view path, conditionally add `todo-card--overdue` class to the card container, and render `<span className="todo-overdue-label">Overdue</span>` adjacent to the formatted due date when `overdue` is true
+- [X] T005 [P] [US1] Add `.todo-card--overdue` and `.todo-overdue-label` CSS rules to `packages/frontend/src/styles/theme.css` using `var(--danger-color)`, `border-left: 3px solid`, `font-size: 12px`, `font-weight: 400`, `margin-left: 6px` — no hardcoded hex values
+- [X] T006 [US1] Update `packages/frontend/src/components/TodoCard.js`: import `{ isOverdue }` from `../utils/overdueUtils`, compute `const overdue = isOverdue(todo.dueDate, todo.completed)` in the view path, conditionally add `todo-card--overdue` class to the card container, and render `<span className="todo-overdue-label">Overdue</span>` adjacent to the formatted due date when `overdue` is true
 
 **Checkpoint**: At this point US1 is fully functional — `npm test --workspace=packages/frontend` must pass all T004 assertions; `isOverdue` utility tests (T002) must still pass
 
@@ -67,7 +67,7 @@ description: "Task list for 001-overdue-todo-visual"
 
 ### Tests for User Story 2
 
-- [ ] T007 [US2] Add completion-toggle test cases to `packages/frontend/src/components/__tests__/TodoCard.test.js` — assert: (a) `queryByText('Overdue')` is null and no `.todo-card--overdue` when `completed=1` + past `dueDate`; (b) `queryByText('Overdue')` is null when `completed=1` + past `dueDate` (integer truthy); (c) `getByText('Overdue')` present when `completed=0` + past `dueDate` (re-opened state)
+- [X] T007 [US2] Add completion-toggle test cases to `packages/frontend/src/components/__tests__/TodoCard.test.js` — assert: (a) `queryByText('Overdue')` is null and no `.todo-card--overdue` when `completed=1` + past `dueDate`; (b) `queryByText('Overdue')` is null when `completed=1` + past `dueDate` (integer truthy); (c) `getByText('Overdue')` present when `completed=0` + past `dueDate` (re-opened state)
 
 **Note**: No new implementation required — `isOverdue` already returns `false` when `completed` is truthy (implemented in T003/T006).
 
@@ -83,7 +83,7 @@ description: "Task list for 001-overdue-todo-visual"
 
 ### Tests for User Story 3
 
-- [ ] T008 [US3] Add theme-compliance test cases to `packages/frontend/src/components/__tests__/TodoCard.test.js` — assert: (a) `.todo-card--overdue` class is present when `data-theme="dark"` is set on `document.documentElement` and todo is overdue; (b) CSS rule for `.todo-card--overdue` in `packages/frontend/src/styles/theme.css` uses `var(--danger-color)` and not a hardcoded hex value (verify by importing and checking the stylesheet, or by snapshot)
+- [X] T008 [US3] Add theme-compliance test cases to `packages/frontend/src/components/__tests__/TodoCard.test.js` — assert: (a) `.todo-card--overdue` class is present when `data-theme="dark"` is set on `document.documentElement` and todo is overdue; (b) CSS rule for `.todo-card--overdue` in `packages/frontend/src/styles/theme.css` uses `var(--danger-color)` and not a hardcoded hex value (verify by importing and checking the stylesheet, or by snapshot)
 
 **Note**: No new implementation required — `theme.css` already defines `--danger-color` for both themes via `[data-theme="dark"]` selector (implemented in T005).
 
@@ -95,8 +95,8 @@ description: "Task list for 001-overdue-todo-visual"
 
 **Purpose**: Verify coverage gates and lint compliance before the pull request.
 
-- [ ] T009 Run Jest coverage for `packages/frontend` via `npm test --workspace=packages/frontend -- --coverage` and confirm: overall coverage ≥ 80%; `overdueUtils.js` at 100% line/branch/function coverage
-- [ ] T010 Run ESLint via `npm run lint --workspace=packages/frontend` (or equivalent) and fix any errors in `overdueUtils.js`, `TodoCard.js`, `theme.css`, and test files
+- [X] T009 Run Jest coverage for `packages/frontend` via `npm test --workspace=packages/frontend -- --coverage` and confirm: overall coverage ≥ 80%; `overdueUtils.js` at 100% line/branch/function coverage
+- [X] T010 Run ESLint via `npm run lint --workspace=packages/frontend` (or equivalent) and fix any errors in `overdueUtils.js`, `TodoCard.js`, `theme.css`, and test files
 
 ---
 

@@ -51,3 +51,15 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
 }
+
+/* Overdue todo indicator */
+.todo-card--overdue {
+  border-left: 3px solid var(--danger-color);
+}
+
+.todo-overdue-label {
+  color: var(--danger-color);
+  font-size: 12px;
+  font-weight: 400;
+  margin-left: 6px;
+}
